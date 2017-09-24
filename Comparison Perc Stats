@@ -1,0 +1,70 @@
+package percolation;
+
+import edu.princeton.cs.introcs.StdOut;
+import edu.princeton.cs.introcs.StdRandom;
+import edu.princeton.cs.introcs.StdStats;
+
+public class PercolationStats 
+{
+	int experiments;
+	double[] openedAverages;
+
+	public PercolationStats(int N, int T) // perform T independent experiments on an NbyN grid
+	{
+		if(N < 0 || T < 0){
+			throw new IllegalArgumentException("Can't use a negative number.");
+		}
+		experiments = T;
+		openedAverages = runExperiement(N,T);
+	}
+	public double mean() // sample mean of percolation threshold
+	{
+		return StdStats.mean(openedAverages);
+	}
+	public double stddev() // sample standard deviation of percolation threshold
+	{
+		return StdStats.stddev(openedAverages);
+	}
+	public double confidenceLow() // low endpoint of 95% confidence interval
+	{
+		return mean() - StdStats.stddev(openedAverages);
+	}
+	public double confidenceHigh() // high endpoint of 95% confidence interval
+	{
+		return mean() + StdStats.stddev(openedAverages);	
+	}
+	private double[] runExperiement(int N, int T) {
+		
+		double[] openedCount = new double[T];
+		
+		for (int i = 0; i < T ; i++){
+			
+			Percolation p = new Percolation(N);
+			int count = 0;
+			
+			while(!p.percolates()){
+				
+				int row = StdRandom.uniform(N);
+				int column = StdRandom.uniform(N);
+				if(!p.isOpen(row, column)){
+					p.open(row,column);
+					count++;
+				}
+			}
+			openedCount[i] = ((double) count)/(N*N);
+		}
+		return openedCount;
+	}
+	
+	public static void main(String[] args){
+
+		PercolationStats test = new PercolationStats(200,100);
+		
+		StdOut.println("Example values after creating PercolationStats ");
+		StdOut.println();
+		StdOut.printf("%-20s %.10f\n", "Mean()", test.mean());
+		StdOut.printf("%-20s %.10f\n", "Stddev():", test.stddev());
+		StdOut.printf("%-20s %.10f\n", "confidende low() :", test.confidenceLow());
+		StdOut.printf("%-20s %.10f\n", "confidence high () :", test.confidenceHigh());
+	}
+}
