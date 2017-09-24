@@ -77,4 +77,8 @@ public class Percolation {
 	private int[] fillPopLast(){														//this guy removes an item and outputs 
 		return new int[]{fillMe[--fillIndex],fillMe[fillIndex]/N,fillMe[fillIndex]%N};	//it's whole value, Y value, and X value
 	}
+	/*
+	This looks so much cleaner than mine gosh !
+	I'm bad at commenting , will fix it in the future .
+	*/
 }
